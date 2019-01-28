@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel='icon' href='w.ico' type='image/x-icon'>
+    <title>广东地图2D</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <script src="echarts.min.js"></script>
+    <script src="echarts-gl.min.js"></script>
+    <!-- <script src="http://echarts.baidu.com/resource/echarts-gl-latest/dist/echarts-gl.min.js"></script> -->
+    <script src="guangdong.js"></script>
+    <script src="jquery-3.2.1.js"></script>
+    
+<style type="text/css">
+    body,html {
+    	margin: 0; padding: 0;
+    }
+    body{
+    	background: #fff6f5;
+    }
+    .wrap {
+    	position: relative;
+    	width: 100%;
+    	height: 0;
+    	padding-top: 120%;
+    }
+    #id1 {
+		position: absolute;
+		top: 0;
+		left: 0;
+       /* border:2px solid green;*/
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .phonecanvas {
+    	transform: scale(1.2);
+    	-webkit-transform: scale(1.2);
+    	-moz-transform: scale(1.2);
+    }
+    .pccanvas {
+    	transform: scale(0.8);
+    	-webkit-transform: scale(0.8);
+    	-moz-transform: scale(0.8);
+    	top: -25% !important;
+    }
+    .title {
+    	text-align: center;
+    	color: #ff661b;
+    	position: relative;
+    	top: 10px;
+    	z-index: 9999;
+    }
+</style>
+
+</head>
+
+
+<body>
+	<h1 class="title">新年快乐</h1>
+    <div class="wrap">
+		<div id="id1"></div>
+		<audio src="video/广州市.mp3" id="myAudio"></audio>
+	</div>
+    
+    
+    <script>
+        var rawData = [
+//      {name: '珠海市',value:130},
+//      {name: '广州市',value: 50},
+//      {name: '中山市',value:30},
+//      {name: '佛山市',value: 50},
+//      {name: '清远市',value:30},
+//      {name: '梅州市',value: 50},
+//      {name: '汕头市',value:30},
+//      {name: '东莞市',value: 50},
+//      {name: '惠州市',value:30},
+//      {name: '深圳市',value: 50}
+        ];
+        
+        function Map(id,cityData){     
+            
+            function sortRule(a,b){return a.value-b.value;}
+            cityData.sort(sortRule);
+            var name=cityData.map(name=>name.name);
+
+            var chart =  echarts.init(document.getElementById(id));
+
+            var geoCoordMap = {
+            '珠海市': [113.353986,21.924979]
+            ,'广州市':[113.480637,23.125178]
+            ,'湛江市':[110.264977,21.274898]
+            ,'茂名市':[110.919229,21.659751]
+            ,'阳江市':[111.825107,21.859222]
+            ,'云浮市':[112.044439,22.629801]
+            ,'肇庆市':[112.472529,23.051546]
+            ,'江门市':[112.894942,22.090431]
+            ,'中山市':[113.382391,22.321113]
+            ,'佛山市':[113.022717,22.828762]
+            ,'清远市':[113.051227,23.685022]
+            ,'韶关市':[113.591544,24.501322]
+            ,'河源市':[114.897802,23.746266]
+            ,'梅州市':[116.117582,24.099112]
+            ,'潮州市':[116.692301,23.661701]
+            ,'揭阳市':[116.255733,23.143778]
+            ,'汕头市':[116.708463,22.87102]
+            ,'汕尾市':[115.364238,22.774485]
+            ,'深圳市':[114.085947,22.347]
+            ,'东莞市':[113.746262,22.746237]
+            ,'惠州市':[114.412599,23.079404]
+        };
+
+        var option = {
+            legend: [],
+            xAxis: [{
+                type: "value",
+                axisLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    show: false
+                },
+                splitLine: {
+                    show: false
+                }
+            },],
+            yAxis: [{
+                type: "category",
+                
+                axisLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false,
+                    alignWithLabel: true
+                },
+                axisLabel: {
+                    textStyle:{
+                       show:false
+                    }
+                },
+                data:name,
+            },],
+            grid: [{
+                left: "70%",
+                right: "20",
+                bottom: "10",
+                top:'60%',
+                containLabel: true
+            },],
+            title:[{
+                text:'广东省',
+                x:0,
+                textStyle:{
+                    color:'rgb(0,147,203)',
+                    fontSize:14
+                }
+            },{
+                text: "新年快乐",
+                textStyle: {
+                    color: "#000",
+                    fontWeight: "bold",
+                    fontSize: 14
+                },
+                top: "20px",
+                left: "50%"
+            }],
+            tooltip:[{
+                // formatter:function(params){
+                //     console.log(params)
+                //     var content='',
+                //     content=params.name+params.value[0]+params.value[1]+params.value[2];
+                //     return content;
+                // },
+                show:true,
+            }],
+            backgroundColor:'#fff6f5',
+            // visualMap: {
+            //     show: false,
+            //     min: 0,
+            //     max: 3000,
+            //     inRange: {
+            //         color: ['#00ffff', '#006edd'],
+            //          color: ['#00467F', '#A5CC82']
+            //     },
+            //     calculable:true
+
+            // },
+
+            geo:{
+
+                show:true,
+                map:'广东',
+                type:'map',
+                label: {
+                    normal: {
+                        show: true,
+                        fontSize:24,
+                        color:'#e80000' //标签颜色
+                    },
+                    emphasis: {
+                        show: true,
+                        fontSize:24,
+                        fontWeight:'bold',
+                        color:'#0083e8',  
+                    }
+                },
+                roam: false,
+                itemStyle: {
+                    normal: {
+                        areaColor: ['#f89e00'],
+                        borderColor: '#fff',
+                        borderWidth: '0.8',
+                    },
+                    emphasis: {
+                        areaColor: '#e6490b',
+                    }
+                }
+            },
+            series: [{
+                name: "安全事件数量",
+                type: "bar",
+                data: cityData,
+                barWidth:7,
+                barCategoryGap: "50%",
+                label: {
+                    normal: {
+                        left:'right',
+                        show: true,
+                        position: "right",
+                        formatter: function(params) {
+                            console.log(params);
+                            return params.data.value;
+                        },
+                        textStyle: {
+                    color: "#000" //color of value
+                        }
+                    }
+                },
+        itemStyle: {
+            normal: {
+                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
+                    offset: 0,
+                    color: "rgb(231,91,250)" // 0% 处的颜色
+                }, {
+                    offset: 1,
+                    color: "rgb(80,50,180)" // 100% 处的颜色
+                }], false),
+                barBorderRadius: [30, 30,30, 30],
+            }
+        }
+    },]
+
+        };//option
+        chart.setOption(option);
+        
+        function renderEachCity() {  
+            var width=$('#id1').width();
+            var height=$('#id1').height();
+            // option.xAxis.push();
+            // option.yAxis.push();
+            // option.grid.push();
+            // option.series.push();
+            echarts.util.each(rawData, function(dataItem, idx) {
+
+                var geoCoord = geoCoordMap[dataItem.name];
+
+                var coord = chart.convertToPixel('geo', geoCoord);
+                console.log(geoCoord+":"+coord);
+                idx += '';
+
+
+                option.xAxis.push({
+                    id: idx,
+                    gridId: idx,
+                    type: 'category',
+                    show: false
+                });
+                option.yAxis.push({
+                    id: idx,
+                    gridId: idx,
+                    show: false
+                });
+                option.grid.push({
+                    id: idx,
+                    width: 10,
+                    height: (dataItem.value),
+                    left: coord[0],
+                    bottom:height-coord[1]+10,
+                });
+
+
+//              option.series.push({
+//                  name:dataItem.name,
+//                  type: 'bar',
+//                  xAxisId: idx,
+//                  yAxisId: idx,
+//                  road:true,
+//                  itemStyle: {
+//                      normal: {
+//                          color:new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+//                              offset: 0,
+//                              color: 'rgba(231,91,250,1)'
+//                          }, {
+//                              offset: 1,
+//                              color: 'rgba(80,50,180,0.9)'
+//                          }], false),
+//                          barBorderRadius: [30, 30,30, 30],
+//                           borderColor:'rgba(255,255,255,0.8)',
+//                      },
+//                      emphasis:{
+//                          color:new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+//                              offset: 1,
+//                              color: 'rgb(231,91,250)'
+//                          }, {
+//                              offset: 0,
+//                              color: 'rgb(80,50,180)'
+//                          }], false)
+//                      }
+//                  },
+//                  data: [dataItem.value]
+//              });
+
+
+            });
+            chart.setOption(option);
+        }
+
+        renderEachCity();
+
+        
+        var myAudio=document.getElementById("myAudio")
+        var Newname=''
+        chart.on('click',function(params){
+        	console.log(params.name);
+        	Newname='video/'+params.name
+        	console.log(Newname);
+		   myAudio.src='video/'+params.name+'.mp3'
+    		myAudio.play()
+        })
+
+    }
+    Map('id1',rawData);
+</script>
+
+ <script>
+ 	var oCanvas=document.getElementsByTagName('canvas')[0]
+	function browserRedirect() {
+		var sUserAgent = navigator.userAgent.toLowerCase();
+		var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+		var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+		var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+		var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+		var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+		var bIsAndroid = sUserAgent.match(/android/i) == "android";
+		var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+		var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+		//console.log("您的浏览设备为：");
+		if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
+			oCanvas.className = 'phonecanvas'
+			console.log(1)
+		} else {
+			oCanvas.className = 'pccanvas'
+			console.log(2)
+		}
+	}
+	setTimeout(function(){
+		browserRedirect();
+	},200)
+ 
+</script>
+</body>
+</html>
